@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.joon.hand_review_app",
+      "sha256_cert_fingerprints": [
+        "91:F7:B0:C0:50:4A:31:9D:FB:B0:7A:91:71:AE:B8:19:4E:C5:6C:EB:13:68:4E:21:69:F7:FB:C4:FA:7B:C1:FF"
+      ]
+    }
+  }
+]
