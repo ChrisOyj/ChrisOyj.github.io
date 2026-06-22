@@ -5,21 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>포커의신 핸드 리플레이</title>
   <style>
-    body { font-family: -apple-system, system-ui, sans-serif; background:#0f1115;
-           color:#e8eaed; margin:0; display:grid; place-items:center; height:100vh; }
-    .card { text-align:center; padding:24px; max-width:340px; }
-    h1 { font-size:20px; margin:0 0 8px; }
-    p { color:#9aa0a6; line-height:1.5; }
+    :root { color-scheme: dark; }
+    body { font-family: -apple-system, system-ui, "Apple SD Gothic Neo", sans-serif;
+           background: linear-gradient(#155a3c, #08291c); color:#f1f5f4; margin:0;
+           display:grid; place-items:center; min-height:100vh; }
+    .card { text-align:center; padding:28px 24px; max-width:340px; }
+    .spade { font-size:54px; line-height:1; color:#e3b23c; }
+    h1 { font-size:20px; margin:14px 0 6px; }
+    p { color:#9fb1a8; line-height:1.55; font-size:14px; }
+    .btn { display:inline-block; margin-top:18px; padding:14px 26px; border-radius:12px;
+           background:#2fb573; color:#fff; font-weight:800; text-decoration:none; font-size:15px; }
+    .hint { margin-top:14px; font-size:12px; color:#7d8f87; }
   </style>
 </head>
 <body>
-  <!-- Placeholder. When the app is installed and the App Link is verified,
-       Android opens the app directly and this page is never shown. The full
-       "install the app" fallback for users without the app is a later step. -->
   <div class="card">
+    <div class="spade">&spades;</div>
     <h1>포커의신 핸드</h1>
-    <p>이 링크는 <b>포커의신</b> 앱에서 열면 핸드 리플레이가 재생됩니다.<br>
-       앱을 설치한 뒤 링크를 다시 눌러주세요.</p>
+    <p>공유된 핸드 리플레이입니다.<br>앱이 설치돼 있으면 자동으로 열립니다.</p>
+    <a id="open" class="btn" href="#">앱에서 열기</a>
+    <p class="hint">자동으로 안 열리면 위 버튼을 눌러주세요.<br>앱이 없다면 먼저 설치해야 합니다.</p>
   </div>
+  <script>
+    (function () {
+      var pkg = 'com.joon.hand_review_app';
+      var payload = (location.hash || '').slice(1);
+      // intent:// targets the app by package, so it opens even from in-app
+      // browsers (KakaoTalk) where verified App Links don't fire. The payload
+      // rides in the `d` query because intent:// can't carry a fragment.
+      var intentUrl = 'intent://chrisoyj.github.io/r?d=' +
+        encodeURIComponent(payload) +
+        '#Intent;scheme=https;package=' + pkg + ';end';
+      document.getElementById('open').setAttribute('href', intentUrl);
+      if (payload) {
+        setTimeout(function () { window.location.href = intentUrl; }, 400);
+      }
+    })();
+  </script>
 </body>
 </html>
