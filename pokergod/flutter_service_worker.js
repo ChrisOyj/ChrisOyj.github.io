@@ -1,31 +1,24 @@
-'use strict';
-
-self.addEventListener('install', () => {
-  self.skipWaiting();
-});
+// Kill-switch service worker.
+//
+// Replaces Flutter's caching service worker so the deployed web app is always
+// served fresh from the network (no stale "old version" after a deploy). It
+// clears any existing caches and, for clients that had a stale cache, reloads
+// them once so they pick up the latest build. New visitors are not reloaded.
+self.addEventListener('install', () => self.skipWaiting());
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    (async () => {
-      try {
-        await self.registration.unregister();
-      } catch (e) {
-        console.warn('Failed to unregister the service worker:', e);
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    const hadCache = keys.length > 0;
+    await Promise.all(keys.map((k) => caches.delete(k)));
+    await self.clients.claim();
+    if (hadCache) {
+      const clients = await self.clients.matchAll({ type: 'window' });
+      for (const c of clients) {
+        c.navigate(c.url);
       }
-
-      try {
-        const clients = await self.clients.matchAll({
-          type: 'window',
-        });
-        // Reload clients to ensure they are not using the old service worker.
-        clients.forEach((client) => {
-          if (client.url && 'navigate' in client) {
-            client.navigate(client.url);
-          }
-        });
-      } catch (e) {
-        console.warn('Failed to navigate some service worker clients:', e);
-      }
-    })()
-  );
+    }
+  })());
 });
+
+// No 'fetch' handler: every request goes straight to the network.
